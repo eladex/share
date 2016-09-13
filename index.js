@@ -5,6 +5,10 @@ var config = require('./config');
 
 var port = process.env.PORT || 3000;
 
-mongoose.connect(config.getDbConnectionString());
+mongoose.connect(config.getDbConnectionString(), function(err){
+    if(err){
+        //error handle
+    }
+});
 
 app.listen(port);
