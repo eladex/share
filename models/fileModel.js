@@ -13,9 +13,7 @@ var fileSchema = new Schema({
     path: String
 });
 
-var Files = mongoose.model('Files', fileSchema);
-
-Files.prototype.normalize = function(){
+fileSchema.methods.normalize = function(){
     return {
         name: this.name,
         size: this.size,
@@ -23,8 +21,22 @@ Files.prototype.normalize = function(){
         modifyDate: this.modifyDate,
         tags: this.tags,
         type: this.type,
-        owner: this.owner
+        owner: this.owner,
     };
 };
+
+var Files = mongoose.model('Files', fileSchema);
+
+// Files.prototype.normalize = function(){
+//     return {
+//         name: this.name,
+//         size: this.size,
+//         uploadDate: this.uploadDate,
+//         modifyDate: this.modifyDate,
+//         tags: this.tags,
+//         type: this.type,
+//         owner: this.owner
+//     };
+// };
 
 module.exports = Files;
