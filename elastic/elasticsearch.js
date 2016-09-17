@@ -14,24 +14,40 @@ function initIndex(indexName){
     return elasticClient.indices.create({
         index: indexName,
         body:{
-            settigns: {
+            settings: {
                 analysis: {
                 filter: {
-                    "my_filter": {
-                        type: "ngram",
+                    my_filter: {
+                        type: 'ngram',
                         min_gram: 3,
                         max_gram: 20
                     }
                 },
                 analyzer: {
-                    "my_analyzer": {
-                        type:      "custom",
-                        tokenizer: "standard",
-                        filter:   ["lowercase","my_filter"]
+                    my_analyzer: {
+                        type: 'custom',
+                        tokenizer: 'standard',
+                        filter: ['lowercase', 'my_filter']
                     }
                 }
                 }
-            }
+            },
+            // mappings: {
+            //     docs: {
+            //         properties: {
+            //             'title': { 
+            //             'type': "string",
+            //             'analyzer' : "my_analyzer",
+            //             'search_analyzer': "standard"
+            //             },
+            //             'tags': { 
+            //             'type': "string",
+            //             'analyzer' : "my_analyzer",
+            //             'search_analyzer': "standard"
+            //             }
+            //         }
+            //     }
+            // }
         }
         
     });
@@ -44,18 +60,35 @@ function initMapping(indexName, type) {
         type: type,
         body: {
             properties: {
-                'title': { 
-                    'type': "string",
-                    'analyzer' : "my_analyzer",
-                    'search_analyzer': "standard"
+                title: { 
+                    type: 'string',
+                    analyzer: 'my_analyzer',
+                    search_analyzer: 'standard'
                 },
-                'tags': { 
-                    'type': "string",
-                    'analyzer' : "my_analyzer",
-                    'search_analyzer': "standard"
+                tags: { 
+                    type: 'string',
+                    analyzer: 'my_analyzer',
+                    search_analyzer: 'standard'
                 },
                 
             }
+        }
+    });
+}
+
+function query(index, type, queryString, fields) {
+    console.log("query string:   " +queryString)
+    return elasticClient.search({
+        index: index,
+        type: type,
+        body: {
+            query: {
+                multi_match: {
+                    query: queryString,
+                    fields: fields,
+                    operator: 'or'
+                }
+            },
         }
     });
 }
@@ -92,7 +125,7 @@ function indexExists(indexName) {
     });
 }
 
-function indexSomeDocs(indexName, type, doc){
+function indexDoc(indexName, type, doc){
     return elasticClient.index({
         index: indexName,
         type: type,
@@ -105,3 +138,5 @@ exports.initIndex = initIndex;
 exports.deleteIndex = deleteIndex;
 exports.indexExists = indexExists;
 exports.initMapping = initMapping;
+exports.indexDoc = indexDoc;
+exports.query = query;
