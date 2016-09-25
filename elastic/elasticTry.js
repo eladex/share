@@ -1,4 +1,5 @@
 var es = require('./elasticsearch.js');
+var stream64 = require('./stream64try.js')
 
 //old code
 /*
@@ -20,7 +21,7 @@ es.initIndex('share').then(warp(es.initMapping,['share','docs']))
 //   .then(function(res){console.log(res.hits.hits)}, function(err){console.log(err)});
 // }, 2000));
 
-var queryString = 'ate'
+var queryString = 'secret'
 
 function warp(f,params) {
   return function(){
@@ -35,9 +36,14 @@ es.indexExists('share').then(function(exists){ //delete and re-create the index
     }
 }).then(warp(es.initIndex,['share']))
 .then(warp(es.initMapping, ['share', 'docs'])) // put mappings
-.then(warp(es.indexDoc,['share','docs',{title:'four word',tags:['five ground','nine water']}])) //add document
+.then(warp(stream64.get64baseFile,['doc.doc'])) // read msword file and convert to base64
+// .then(warp(es.indexDoc,['share','docs',{title:'four word',tags:['five ground','nine water']}])) //add document
+.then(function (data_base64) {
+  return es.indexDoc('share','docs',{title:'four word',tags:['five ground','nine water'], 
+    file:data_base64}); //add document
+})
 .then(function(res){console.log(res)}, function(err){console.log(err)})
 .then(setTimeout(function() { //perform search
-  es.query('share','docs',queryString,['title','tags'])
-  .then(function(res){console.log(res.hits.hits)}, function(err){console.log(err)});
-}, 2000));
+  es.query('share','docs',queryString,['title','tags','file.content_type','file.content'])
+  .then(function(res){console.log(res.hits.hits[0])}, function(err){console.log(err)});
+}, 3000));

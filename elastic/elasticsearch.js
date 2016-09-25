@@ -70,6 +70,18 @@ function initMapping(indexName, type) {
                     analyzer: 'my_analyzer',
                     search_analyzer: 'standard'
                 },
+                file : {
+                    type: 'attachment',
+                    fields: {
+                        content_type: {type: 'string', store:true},
+                        content: {type: 'string', store:true},
+                        author: {type: 'string', store:true},
+                        keywords: {type: 'string', store:true},
+                        content_length: {type: 'string', store:true},
+                        language: {type: 'string', store:true},
+
+                    }
+                }
                 
             }
         }
@@ -82,6 +94,7 @@ function query(index, type, queryString, fields) {
         index: index,
         type: type,
         body: {
+            fields:['file.content_type','file.author','file.keywords','file.content_length','file.content'],
             query: {
                 multi_match: {
                     query: queryString,
