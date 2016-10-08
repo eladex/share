@@ -5,7 +5,7 @@ var cors = require('./cors.js');
 
 var multer = require('multer');
 var storage = multer.diskStorage({
-    destination: '/home/eladex/Desktop/tmp/',
+    destination: 'C:/files',
     filename: function(req, file, cb){
         cb(null, file.originalname);
     }
@@ -33,7 +33,7 @@ module.exports = function(app){
                 console.log(err);
                 return res.status(500).end();
             }
-            console.log(req.body);
+            console.log(JSON.stringify(req.body));
             res.status(200).end();
         });   
     });
