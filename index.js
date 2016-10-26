@@ -11,6 +11,8 @@ var port = process.env.PORT || 3000;
 
 
 
+app.use(express.static('public'));
+
 mongoose.connect(config.getDbConnectionString());
 setupController(app);
 fileController(app);

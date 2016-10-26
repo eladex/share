@@ -1,0 +1,39 @@
+.rtl{
+/*	float: right;*/
+	direction: rtl;
+}
+::-webkit-input-placeholder { text-align:right; }
+.head{
+    font-weight: bold;
+}
+div .header{
+/*	background-color: azure;*/
+	border-style: solid;
+    border-color: black;
+	border-width: 1px;
+	border-radius: 8px;
+	padding-bottom: 2px;
+	padding-top: 3px;
+}
+.inside{
+    margin-right: 15px;
+}   
+.my-drop-zone {
+    border: dotted 3px blue;
+    cursor: pointer;
+	border-radius: 12px;
+    font-size: 200%;
+    color: blue;
+
+}
+        
+.nv-file-over {
+    border: dotted 3px blue;
+}
+
+html,body {
+    height: 100%;
+}
+.input-required{
+  box-shadow: 4px 4px 20px rgba(200, 0, 0, 0.85);
+}

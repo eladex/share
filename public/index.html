@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html id="ng-app" ng-app="app">
+<!-- id="ng-app" IE<8 -->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Uploader</title>
+	
+	
+	<!-- styles -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-3.3.7-dist/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="css/ng-tags-input.css" />
+    <link rel="stylesheet" type="text/css" href="css/more.css" />
+    <link rel="stylesheet" type="text/css" href="css/dropzone.css" />
+
+    
+    
+    <!--js files-->
+<!--    <script src="js/jquery-3.1.1.min.js"> </script>-->
+    <script src="js/angular.min.js"> </script>
+    <script src="js/dropzone.js"> </script>
+    <script src="js/ui-bootstrap-tpls-2.1.4.min.js"> </script>
+    <script src="js/ng-tags-input.min.js"> </script>
+    <script src="js/controllers/uploadController.js"></script>
+    <script src="js/services/tags.js"></script>
+    <script src="js/services/classificationService.js"></script>
+    <script src="js/directives/typeaheadInput.js"></script>
+    
+
+<!--
+    <style>
+        .typeahead-demo .custom-popup-wrapper {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
+            display: none;
+            background-color: #f9f9f9;
+        }
+        
+        .typeahead-demo .custom-popup-wrapper > .message {
+            padding: 10px 20px;
+            border-bottom: 1px solid #ddd;
+            color: #868686;
+        }
+        
+        .typeahead-demo .custom-popup-wrapper > .dropdown-menu {
+            position: static;
+            float: none;
+            display: block;
+            min-width: 160px;
+            background-color: transparent;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+        }
+    </style>
+-->
+
+</head>
+
+<!-- 1. nv-file-drop="" uploader="{Object}" options="{Object}" filters="{String}" -->
+
+<body ng-controller="uploadController as main">
+
+    <div class="container rtl">
+
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <h3>בחר קבצים להעלאה</h3>
+                    <div id ="myDropZone" class="text-center my-drop-zone">
+                        <br>
+                        <br>
+                        <br>
+                        Drop Files Or Click
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                    </div>
+<!--              <button ng-click="try()">fgfg</button>-->
+            </div>
+        </div>
+
+        <div class="row">
+
+            <h3>קבצים להעלאה</h3>
+            <p>אורך תור: {{ main.myDropZone.files.length }}</p>
+
+            <div class="row head">
+				<div class="col-md-4">פעולות</div>
+				<div class="col-md-1 text-center">סטטוס</div>
+				<div class="col-md-2 text-center">התקדמות</div>
+				<div class="col-md-1 text-center">גודל</div>
+                <div class="col-md-4">שם הקובץ</div>
+				
+				
+<!--
+					<div class="col-md-4">Name</div>
+					<div class="col-md-1 text-center">Size</div>
+					<div class="col-md-2 text-center">Proggress</div>
+					<div class="col-md-1 text-center">Status</div>
+					<div class="col-md-4">Actions</div>                        
+-->
+                    
+                    
+                                            
+                    
+            </div>
+        </div>
+	
+		
+        <div ng-repeat="file in main.myDropZone.files" class="row" style="margin-top:5px;">
+            <div class="row header">
+<!--
+                <div class="col-md-4"><strong>{{ ::file.name }}</strong></div>                        
+                <div class="col-md-1">
+                    <div nowrap>{{ ::file.size/1024/1024|number:2 }} MB</div></div>
+                <div class="col-md-2">                           
+                    <div class="progress" style="margin-bottom: 0;">
+                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': file.upload.progress + '%' }"></div>
+                    </div>
+                </div>
+                <div class="col-md-1"> <div class="text-center">
+                            <div ng-show="file.status=='success'"><span class="glyphicon glyphicon-ok"></span></div>
+                            <div ng-show="file.status=='error'"><span class="glyphicon glyphicon-remove"></span></div>
+                        </div></div>                        
+                <div class="col-md-4">                           
+                            <button type="button" class="btn btn-success btn-xs" ng-click="main.uploadFile(file)">
+                                    <div class="glyphicon glyphicon-upload"></div> Upload
+                                </button>
+                            <button type="button" class="btn btn-danger btn-xs" ng-click="main.myDropZone.removeFile(file)">
+                                    <div class="glyphicon glyphicon-trash"></div> Remove
+                                </button>
+                </div>    
+-->
+				
+				
+				<div class="col-md-4">                           
+                            <button type="button" class="btn btn-success btn-xs" ng-click="main.uploadFile(file)">
+                                    <div class="glyphicon glyphicon-upload"></div> העלאה
+                                </button>
+                            <button type="button" class="btn btn-danger btn-xs" ng-click="main.myDropZone.removeFile(file)">
+                                    <div class="glyphicon glyphicon-trash"></div> הסרה
+                                </button>
+                </div>    
+				 <div class="col-md-1"> <div class="text-center">
+                            <div ng-show="file.status=='success'"><span class="glyphicon glyphicon-ok"></span></div>
+                            <div ng-show="file.status=='error'"><span class="glyphicon glyphicon-remove"></span></div>
+                        </div></div>
+				 <div class="col-md-2">                           
+                    <div class="progress" style="margin-bottom: 0;">
+                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': file.upload.progress + '%' }"></div>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div nowrap>{{ ::file.size/1024/1024|number:2 }} מ"ב</div></div>
+				
+				<div class="col-md-4"><strong>{{ ::file.name }}</strong></div>                        
+                
+               
+               
+				
+            </div>
+
+            <div class="row inside">
+<!--
+                <div class="col-md-4">
+                    <div class="row" style="margin-top:2px">
+                    <typeahead-input model="file.moreData.classification.source" label="Source" has-error="file.invalid"
+                        on-select="main.inputValSelected(val)" on-select-param-name="val" 
+                        typeahead-options="main.loadSources(query)" options-param-name="query" 
+                        text-field="name"></typeahead-input>
+                    </div>
+                    <div class="row" style="margin-top:3px">
+                    <typeahead-input model="file.moreData.classification.publishProcedure" label="Publish Procedure" 
+                           typeahead-options="main.loadSources(query)" options-param-name="query" text-field="name"></typeahead-input>
+                    </div>
+                    <div class="row" style="margin-top:3px">
+                    <typeahead-input model="file.moreData.classification.sp" label="SP" 
+                           typeahead-options="main.loadSources(query)" options-param-name="query" text-field="name"></typeahead-input>
+                    </div>
+                </div>
+                <div class="col-md-4"> 
+                    <div>Tags:</div>
+                    <tags-input ng-model="file.moreData.tags">
+                    <auto-complete source="main.loadTags($query)" select-first-match="'false'"></auto-complete>
+                    </tags-input>
+                </div>
+
+-->
+				
+				<div class="col-md-4 col-md-offset-4"> 
+                    <div>תגיות:</div>
+                    <tags-input ng-model="file.moreData.tags" placeholder="הוסף תגיות">
+                    <auto-complete source="main.loadTags($query)" select-first-match="'false'"></auto-complete>
+                    </tags-input>
+                </div>
+				 <div class="col-md-4">
+                    <div class="row" style="margin-top:2px">
+                    <typeahead-input model="file.moreData.classification.source" label="מקור" has-error="file.invalid"
+                        on-select="main.inputValSelected(val)" on-select-param-name="val" 
+                        typeahead-options="main.loadSources(query)" options-param-name="query" 
+                        text-field="name"></typeahead-input>
+                    </div>
+                    <div class="row" style="margin-top:3px">
+                    <typeahead-input model="file.moreData.classification.publishProcedure" label="נוהל הפצה" 
+                           typeahead-options="main.loadSources(query)" options-param-name="query" text-field="name"></typeahead-input>
+                    </div>
+                    <div class="row" style="margin-top:3px">
+                    <typeahead-input model="file.moreData.classification.sp" label="שוס" 
+                           typeahead-options="main.loadSources(query)" options-param-name="query" text-field="name"></typeahead-input>
+                    </div>
+                </div>
+                
+				
+				
+            </div>
+<!--
+            <div class="row inside" style="margin-top:5px" >
+            </div>
+-->
+			
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <br>
+                    <div>
+                    התקדמות כללית:
+                    <div class="progress" style="">
+                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': main.totalProgress + '%' }"></div>
+                    </div>
+                    </div>
+                    <button type="button" class="btn btn-success btn-s" ng-click="main.uploadMultiple()" ng-disabled="!main.myDropZone.files.length">
+                        <span class="glyphicon glyphicon-upload"></span> העלה הכל
+                    </button>
+                    <button type="button" class="btn btn-danger btn-s" ng-click="main.removeAllFiles()" ng-disabled="!main.myDropZone.files.length">
+                        <span class="glyphicon glyphicon-trash"></span> הסר הכל
+                    </button>
+                </div>
+
+            </div>
+
+</div>
+
+            
+
+</body>
+
+</html>
