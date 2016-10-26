@@ -1,6 +1,5 @@
 var Files = require('../models/fileModel');
 // var _ = require('underscore');
-var bodyParser = require('body-parser');
 var cors = require('./cors.js');
 
 var multer = require('multer');
@@ -15,8 +14,6 @@ var upload = multer({storage: storage}).any();
 
 module.exports = function(app){
 	app.use(cors());	
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
 
     app.get('/api/file/metadata/:id', function(req, res){
         Files.findById({ _id: req.params.id }, function(err, file){

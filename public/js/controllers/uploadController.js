@@ -113,6 +113,20 @@ angular
             });
         };
 
+        this.loadPublishPrecedure = function(query){
+            return classificationService.searchPublishPrecedure(query)
+                .then(function(res){
+                return res.data;
+            });
+        };
+
+        this.loadShoss = function(query){
+            return classificationService.searchShoss(query)
+                .then(function(res){
+                return res.data;
+            });
+        };
+
         this.loadTags = function(query) {
             return tagsService.searchTags(query);
         };
@@ -129,7 +143,7 @@ angular
             this.myDropZone.files.forEach(this.uploadFile, this);
         };
         this.inputValSelected= function(val) {
-            return (val.name === undefined || val.name==="") ? false : true;
+            return (val.Name === undefined || val.Name==="") ? false : true;
         };        
 
     }]);
