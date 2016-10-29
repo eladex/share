@@ -1,10 +1,11 @@
 var Files = require('../models/fileModel');
 // var _ = require('underscore');
 var cors = require('./cors.js');
+var config = require('../config');
 
 var multer = require('multer');
 var storage = multer.diskStorage({
-    destination: 'C:/files',
+    destination: config.storageLocation,
     filename: function(req, file, cb){
         cb(null, file.originalname);
     }
@@ -30,8 +31,28 @@ module.exports = function(app){
                 console.log(err);
                 return res.status(500).end();
             }
-            console.log(JSON.stringify(req.body));
-            res.status(200).end();
+            var files = [];
+            var additionalData = JSON.parse(req.body.moreData);
+            req.files.forEach(function(file){
+                files.push({
+                    name: file.originalname,
+                    type: file.mimetype,
+                    path: file.path,
+                    modifyDate: additionalData.lastModified,
+                    tags: additionalData.tags,
+                    size: file.size,
+                });
+            });
+            Files.collection.insert(files,function(err, docs){
+                if (err){
+                    console.log(err);
+                }
+                else {
+                    console.log(additionalData.lastModified);
+                    console.log("saved");
+                    res.status(200).end();
+                }
+            });
         });   
     });
 }

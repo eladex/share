@@ -1,5 +1,6 @@
-var es = require('./elasticsearch.js');
-var stream64 = require('./stream64try.js')
+var es = require('./elasticSearch.js');
+var stream64 = require('./stream64try.js');
+var esInit = require('./esInit.js');
 
 //old code
 /*
@@ -21,7 +22,7 @@ es.initIndex('share').then(warp(es.initMapping,['share','docs']))
 //   .then(function(res){console.log(res.hits.hits)}, function(err){console.log(err)});
 // }, 2000));
 
-var queryString = 'secret'
+var queryString = "msword"
 
 function warp(f,params) {
   return function(){
@@ -30,20 +31,31 @@ function warp(f,params) {
 }
 
 
-es.indexExists('share').then(function(exists){ //delete and re-create the index
+es.indexExists().then(function(exists){ //delete and re-create the index
     if(exists){ 
-        return es.deleteIndex('share');
+        return es.deleteIndex();
     }
-}).then(warp(es.initIndex,['share']))
-.then(warp(es.initMapping, ['share', 'docs'])) // put mappings
-.then(warp(stream64.get64baseFile,['doc.doc'])) // read msword file and convert to base64
-// .then(warp(es.indexDoc,['share','docs',{title:'four word',tags:['five ground','nine water']}])) //add document
+}).then(warp(esInit.init,[]))
+.then(warp(stream64.get64baseFile,['doc.doc']))
 .then(function (data_base64) {
-  return es.indexDoc('share','docs',{title:'four word',tags:['five ground','nine water'], 
+  return es.indexDoc({title:'doc',tags:['five ground','nine water'], 
     file:data_base64}); //add document
 })
 .then(function(res){console.log(res)}, function(err){console.log(err)})
 .then(setTimeout(function() { //perform search
-  es.query('share','docs',queryString,['title','tags','file.content_type','file.content'])
-  .then(function(res){console.log(res.hits.hits[0])}, function(err){console.log(err)});
-}, 3000));
+  es.query(queryString,['title','tags','file.content_type','file.content'])
+  .then(function(res){console.log(/*JSON.stringify(res))*/ res.hits.hits[0])}, function(err){console.log(err)});
+}, 5000));
+
+
+
+
+
+
+
+
+// es.indexExists('share-demo').then(function(exists){ //delete and re-create the index
+//     if(exists){ 
+//         return es.deleteIndex('share-demo');
+//     }
+// }).then(warp(esInit.init,[]),function(err){console.log(err)});

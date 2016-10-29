@@ -47,7 +47,7 @@ angular
                     sp:"",
 				},
                 lastModified: file.lastModifiedDate,
-            }
+            };
             file.invalid = false;
             that.totalSize += file.size;
             that.updateTotalProgress();
