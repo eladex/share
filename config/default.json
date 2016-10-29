@@ -1,7 +1,0 @@
-{
-  "ElasticSearch": {
-    "host": "localhost:9200",
-    "indexAliasName": "share",
-    "typeName": "files"
-  }
-}
