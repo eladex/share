@@ -11,6 +11,7 @@ angular.module("app").directive('typeaheadInput', function(){
             placeholder: '@',
             hasError: '=?',
 			textField: '@',
+            errorMsg: '@',
         },
         template: function(tElem, tAttrs){
 			var tOnSelect = "", paramName = tAttrs['optionsParamName'];
@@ -24,6 +25,7 @@ angular.module("app").directive('typeaheadInput', function(){
 			var template = 
 				'<div ng-class="{\'has-error\':hasError}">'+
         			'<div class="control-label" style="margin-bottom:3px">{{::label}}:</div>' +
+                    '<div style="color:red" ng-show="hasError">{{::errorMsg}}</div>'+
                 	'<input type="text" ng-model="model" placeholder="{{::placeholder}}" '+
                     	'uib-typeahead="val as val' + textField +' for val in typeaheadOptions({'+paramName+':$viewValue})"'+
                     	'typeahead-loading="loading" typeahead-no-results="noResults"'+
@@ -51,6 +53,7 @@ angular.module("app").directive('typeaheadInput', function(){
             if(!scope.getOptions){
                 scope.getOptions = function(){};
             }
+            
             
         }
     };

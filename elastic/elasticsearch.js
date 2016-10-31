@@ -1,100 +1,24 @@
 var es = require('elasticsearch');
+var config = require('../config');
 
 var elasticClient = new es.Client({  //todo: take from config and multi-hosts
-    host: 'localhost:9200',
+    host: config.elasticSearch.host,
     log: 'info'
 });
 
-function deleteIndex(indexName) {  
-    return elasticClient.indices.delete({
-        index: indexName
-    });
-}
-function initIndex(indexName){
-    return elasticClient.indices.create({
-        index: indexName,
-        body:{
-            settings: {
-                analysis: {
-                filter: {
-                    my_filter: {
-                        type: 'ngram',
-                        min_gram: 3,
-                        max_gram: 20
-                    }
-                },
-                analyzer: {
-                    my_analyzer: {
-                        type: 'custom',
-                        tokenizer: 'standard',
-                        filter: ['lowercase', 'my_filter']
-                    }
-                }
-                }
-            },
-            // mappings: {
-            //     docs: {
-            //         properties: {
-            //             'title': { 
-            //             'type': "string",
-            //             'analyzer' : "my_analyzer",
-            //             'search_analyzer': "standard"
-            //             },
-            //             'tags': { 
-            //             'type': "string",
-            //             'analyzer' : "my_analyzer",
-            //             'search_analyzer': "standard"
-            //             }
-            //         }
-            //     }
-            // }
-        }
-        
-    });
-}
+var indexAliasName = config.elasticSearch.indexAliasName;
+var typeName = config.elasticSearch.typeName;
 
-function initMapping(indexName, type) {
-    console.log(indexName + "    "+ type);  
-    return elasticClient.indices.putMapping({
-        index: indexName,
-        type: type,
-        body: {
-            properties: {
-                title: { 
-                    type: 'string',
-                    analyzer: 'my_analyzer',
-                    search_analyzer: 'standard'
-                },
-                tags: { 
-                    type: 'string',
-                    analyzer: 'my_analyzer',
-                    search_analyzer: 'standard'
-                },
-                file : {
-                    type: 'attachment',
-                    fields: {
-                        content_type: {type: 'string', store:true},
-                        content: {type: 'string', store:true},
-                        author: {type: 'string', store:true},
-                        keywords: {type: 'string', store:true},
-                        content_length: {type: 'string', store:true},
-                        language: {type: 'string', store:true},
 
-                    }
-                }
-                
-            }
-        }
-    });
-}
 
-function query(index, type, queryString, fields) {
+
+function query(queryString, fields) {
     console.log("query string:   " +queryString)
     return elasticClient.search({
-        index: index,
-        type: type,
+        index: indexAliasName,
+        type: typeName,
         body: {
-            fields:['file.content_type','file.author','file.keywords','file.content_length','file.content'],
+            fields:['file.content_type','file.content_length','file.content'],
             query: {
                 multi_match: {
                     query: queryString,
@@ -105,51 +29,30 @@ function query(index, type, queryString, fields) {
         }
     });
 }
-
-// function initAnalyzers(indexName){
-//     return elasticClient.indices.putSettings({
-//         index: indexName,
-//         analysis: {
-//             "filter": {
-//                 "trigrams_filter": {
-//                     "type":     "ngram",
-//                     "min_gram": 3,
-//                     "max_gram": 3
-//                 }
-//             },
-//             "analyzer": {
-//                     "trigrams": {
-//                         "type":      "custom",
-//                         "tokenizer": "standard",
-//                         "filter":   [
-//                             "lowercase",
-//                             "trigrams_filter"
-//                         ]
-//                     }
-//                 }
-//         }
-    
-//     });
-// }
-
-function indexExists(indexName) {  
-    return elasticClient.indices.exists({
-        index: indexName
-    });
-}
-
-function indexDoc(indexName, type, doc){
+function indexDoc(doc){
     return elasticClient.index({
-        index: indexName,
-        type: type,
+        index: indexAliasName,
+        type: typeName,
         body : doc
     })
 }
+function deleteIndex() {  
+    return elasticClient.indices.delete({
+        index: indexAliasName
+    });
+}
+function indexExists() {  
+    return elasticClient.indices.exists({
+        index: indexAliasName
+    });
+};
 
-exports.initIndex = initIndex;
-// exports.initAnalyzers = initAnalyzers;
-exports.deleteIndex = deleteIndex;
-exports.indexExists = indexExists;
-exports.initMapping = initMapping;
-exports.indexDoc = indexDoc;
-exports.query = query;
+module.exports = {
+    indexExists: indexExists,
+    deleteIndex: deleteIndex,
+    indexDoc: indexDoc,
+    query: query
+};
+
+
+

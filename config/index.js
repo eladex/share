@@ -9,5 +9,8 @@ module.exports = {
         indexAliasName: "share",
         typeName: "files"
     },
-    storageLocation: "/home/eladex/Desktop/tmp",
+    storageLocation: "C:/files"
+    
 }
+
+// "/home/eladex/Desktop/tmp"
